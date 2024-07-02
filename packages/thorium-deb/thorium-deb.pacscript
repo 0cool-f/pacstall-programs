@@ -1,14 +1,11 @@
-name="thorium-deb"
+pkgname="thorium-deb"
 gives="thorium-browser"
-pkgver="122.0.6261.132"
+pkgver="124.0.6367.218"
 arch=('arm64' 'amd64')
-if [[ ${CARCH} == "arm64" ]]; then
-  url="https://github.com/Alex313031/Thorium-Raspi/releases/download/M${pkgver}/${gives}_${pkgver}_arm64.deb"
-  hash="3c1de6efa68d5221d3c2657e9ece54e4ea918fcf4bddeb50ae80b5b8756f194a"
-else
-  url="https://github.com/Alex313031/thorium/releases/download/M${pkgver}/${gives}_${pkgver}_SSE3.deb"
-  hash="f51d36d2e9aca959b71d60f3b7d72ad315b3c968171a28ecda58bf8f672177ec"
-fi
-maintainer="Oren Klopfer <oren@taumoda.com>"
+sha256sums_arm64=("a9eb0bd82f72df902d9085a28b59838d46eda3735e0b5d597faed24fd139a30a")
+source_arm64=("https://github.com/Alex313031/Thorium-Raspi/releases/download/M${pkgver}/${gives}_${pkgver}_arm64.deb")
+sha256sums_amd64=("5917f059c3329b430fbefdd34ec66054b4181a745d8350e4cfe66edc3f7b1e30")
+source_amd64=("https://github.com/Alex313031/thorium/releases/download/M${pkgver}/${gives}_${pkgver}_SSE3.deb")
+maintainer=("Oren Klopfer <oren@taumoda.com>")
 pkgdesc="Chromium fork for linux with extra patches"
 repology=("project: thorium-browser")

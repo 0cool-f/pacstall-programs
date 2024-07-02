@@ -1,36 +1,38 @@
-name="galaxybudsclient-bin"
+pkgname="galaxybudsclient-bin"
 gives="galaxybudsclient"
-pkgver="4.6.0"
+pkgver="5.0.0"
 pkgdesc="Unofficial Galaxy Buds Manager for Windows and Linux"
 repology=("project: galaxybudsclient")
-homepage="https://github.com/ThePBone/GalaxyBudsClient"
+url="https://github.com/timschneeb/GalaxyBudsClient"
 arch=("amd64" "arm64" "armhf")
 depends=("bluetooth")
-maintainer="vigress8 <vig@disroot.org>"
+maintainer=("vigress8 <vig@disroot.org>")
 
-url="https://github.com/ThePBone/GalaxyBudsClient/releases/download/${pkgver}/GalaxyBudsClient_Linux-${CARCH/armhf/arm}_portable.zip"
-case "${CARCH}" in
-  amd64)
-    hash="b3c4af4c56b2a023e289a1eb379e939c8cb786376adf971ac011a3060ff7f8db"
-    ;;
-  arm64)
-    hash="f467063efd0344798564830e6ce1231380a960af715f6e7b1264d0223aaa7362"
-    ;;
-  armhf)
-    hash="e6842fc6392312f8de568eb268aaf38d672f904995ba5c215dc23eddbff28d9f"
-    ;;
-  *) ;;
-esac
+source_amd64=("${url}/releases/download/${pkgver}/GalaxyBudsClient_Linux_64bit_Portable.bin")
+source_arm64=("${url}/releases/download/${pkgver}/GalaxyBudsClient_Linux_arm64_Portable.bin")
+source_armhf=("${url}/releases/download/${pkgver}/GalaxyBudsClient_Linux_arm_Portable.bin")
+source=("${url}/blob/${pkgver}/GalaxyBudsClient/Resources/icon.png?raw=true")
+sha256sums_amd64=('26f2caecf29db865f63fcc94d3b3fc5e61a5a10e5c3eb3895fedb3d694ac815e')
+sha256sums_arm64=('eeedf6979aa1636fbc5c984ce38b1c14586f63996795c3b40c9bf4e8d8d08a08')
+sha256sums_armhf=('8ef02d29c182679b10d619b39573df10f1b8506fb9e398d7d91a13bc210ddea9')
+sha256sums=('15783ad016b4fc50395456da8bd4838441582f5394a0731c0038fdc692289d51')
 
 package() {
   # Install icon
-  wget -q -O "${gives}.png" "https://raw.githubusercontent.com/ThePBone/GalaxyBudsClient/master/GalaxyBudsClient/Resources/icon_white.png"
-  sudo install -Dm644 "${gives}.png" -t "${pkgdir}/usr/share/pixmaps"
+  install -Dm644 icon.png "${pkgdir}/usr/share/pixmaps/${gives}.png"
 
   # Install desktop file
-  wget -q "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/${name}/${gives}.desktop"
-  sudo install -Dm644 "${gives}.desktop" -t "${pkgdir}/usr/share/applications"
+  install -Dm644 /dev/stdin "${pkgdir}/usr/share/applications/${gives}.desktop" << EOF
+[Desktop Entry]
+Name=Galaxy Buds Client
+Comment=${pkgdesc}
+Exec=${gives}
+Icon=${gives}
+Type=Application
+Categories=Utility;
+Keywords=samsung;galaxy;buds;headphone;bluetooth;
+EOF
 
   # Install binary
-  sudo install -Dm755 GalaxyBudsClient "${pkgdir}/usr/bin/${gives}"
+  install -Dm755 ./*.bin "${pkgdir}/usr/bin/${gives}"
 }

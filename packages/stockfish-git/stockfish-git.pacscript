@@ -1,22 +1,21 @@
-name="stockfish-git"
+pkgname="stockfish-git"
 gives="stockfish"
 pkgdesc="The Stockfish chess engine"
-homepage='https://stockfishchess.org/'
-url="https://github.com/official-stockfish/Stockfish.git"
-maintainer="pythoncrazy <encryptprogramming@gmail.com>"
+url='https://stockfishchess.org/'
+source=("https://github.com/official-stockfish/Stockfish.git")
+maintainer=("pythoncrazy <pinakpaliwal07@gmail.com>")
 pkgver="0.0.1"
+pkgrel="2"
 breaks=("stockfish-git")
-pkgver() {
-  git ls-remote "${url}" master | cut -f1 | cut -c1-8
-}
+external_connection="true"
 
-build(){
-  cd src
+build() {
+  cd Stockfish/src
   make -j"${NCPU}" profile-build
 }
 
 package() {
-  cd src
+  cd Stockfish/src
   make strip
-  sudo make install BINDIR="${pkgdir}/usr/local/bin"
+  make install BINDIR="${pkgdir}/usr/local/bin"
 }

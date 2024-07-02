@@ -1,19 +1,25 @@
-name="kakoune"
-pkgver="2023.08.05"
+pkgname="kakoune"
+pkgver="2024.05.18"
 pkgdesc="mawww's experiment for a better code editor"
-repology=("project: ${name}")
-homepage="https://kakoune.org/"
-arch=("amd64" "arm64" "i386")
-replace=("${name}")
-maintainer="vigress8 <vig@disroot.org>"
-url="https://github.com/mawww/${name}/archive/refs/tags/v${pkgver}.tar.gz"
-hash="1ad7bfe9e1d861115cd418cb500990ea5fa63726e998df13702e5caa8fc84356"
+license=('Unlicense')
+repology=("project: ${pkgname}")
+url="https://kakoune.org/"
+arch=("amd64" "arm64" "armhf" "i386")
+replaces=("${pkgname}")
+maintainer=("vigress8 <vig@disroot.org>")
+source=("https://github.com/mawww/${pkgname}/archive/refs/tags/v${pkgver}.tar.gz")
+sha256sums=("50f2920db8ab8f71556b73dfd6d53fb924f67d1c60b9882050cfecfaa3aed31f")
 
 build() {
-  cd src
-  make -j"${NCPU}"
+  make -C "${pkgname}-${pkgver}" -j"${NCPU}"
+}
+
+check() {
+  # A few tests fail.
+  make -C "${pkgname}-${pkgver}" test || :
 }
 
 package() {
-  sudo make install DESTDIR="${pkgdir}"
+  make -C "${pkgname}-${pkgver}" install \
+    DESTDIR="${pkgdir}" PREFIX=/usr
 }

@@ -1,7 +1,7 @@
-name="unicorn-desktop-git"
-url="https://github.com/rhino-linux/unicorn.git"
+pkgname="unicorn-desktop-git"
+source=("https://github.com/rhino-linux/unicorn.git")
 pkgver="0.0.1"
-pkgrel="2"
+pkgrel="1"
 depends=("xfwm4" "xfdashboard" "xfdashboard-plugins" "xfce4-appmenu-plugin" "vala-panel-plugins-wnck"
   "vala-panel-appmenu" "appmenu-gtk2-module" "appmenu-gtk3-module" "xfce4-power-manager"
   "xfce4-power-manager-plugins" "xfce4-pulseaudio-plugin" "xfce4-helpers" "pavucontrol"
@@ -9,69 +9,75 @@ depends=("xfwm4" "xfdashboard" "xfdashboard-plugins" "xfce4-appmenu-plugin" "val
   "dbus-x11" "hardinfo" "xarchiver" "xdg-desktop-portal-gtk" "xserver-xorg-video-vesa"
   "xserver-xorg-video-fbdev" "light-locker" "light-locker-settings" "tumbler" "tumbler-plugins-extra"
   "ffmpegthumbnailer" "bluez-firmware" "xserver-xorg-input-multitouch" "xserver-xorg-input-synaptics"
-  "ukui-touchpadserver" "pipewire-audio" "bluetooth")
-pacdeps=("lightpad-git" "papirus-folders" "ulauncher-deb" "cortile-bin")
+  "ukui-touchpadserver" "pipewire-audio" "bluetooth" "libxfce4ui-utils" "at-spi2-core")
+pacdeps=("lightpad-git" "papirus-folders" "ulauncher-deb" "cortile-bin" "adw-gtk-theme")
 gives="unicorn-desktop"
-replace=("unicorn-mobile" "unicorn-mobile-git")
+replaces=("unicorn-mobile" "unicorn-mobile-git")
 priority="required"
 pkgdesc="Unicorn Desktop by the Rhino Linux Team"
-maintainer="Oren Klopfer <oren@taumoda.com>"
-pkgver() {
-  git ls-remote "${url}" main | cut -f1 | cut -c1-8
-}
+maintainer=("Oren Klopfer <oren@taumoda.com>")
 incompatible=("debian:*")
 
 build() {
-  sudo mkdir -p "${pkgdir}/usr/share/backgrounds"
-  sudo mkdir -p "${pkgdir}/usr/share/doc"
-  sudo mkdir -p "${pkgdir}/etc/skel/.config"
-  sudo mkdir -p "${pkgdir}/usr/share/icons"
-  sudo mkdir -p "${pkgdir}/usr/share/backgrounds/xfce"
-  sudo mkdir -p "${pkgdir}/usr/share/applications"
-  sudo mkdir -p "${pkgdir}/usr/share/plank/themes"
-  sudo mkdir -p "${pkgdir}/etc/skel/.lightpad"
-  sudo mkdir -p "${pkgdir}/etc/xdg/xdg-unicorn/xfce4"
-  sudo mkdir -p "${pkgdir}/usr/share/xsessions"
-  sudo mkdir -p "${pkgdir}/usr/share/lightdm/lightdm.conf.d"
-  sudo mkdir -p "${pkgdir}/usr/bin"
-  sudo mkdir -p "${pkgdir}/usr/share/icons/hicolor/scalable/places"
-  sudo mkdir -p "${pkgdir}/usr/share/themes"
-  sudo mkdir -p "${pkgdir}/etc/X11/xorg.conf.d"
+  cd "${_archive}"
+  mkdir -p "${pkgdir}/usr/share/backgrounds"
+  mkdir -p "${pkgdir}/usr/share/doc"
+  mkdir -p "${pkgdir}/etc/skel/.config"
+  mkdir -p "${pkgdir}/usr/share/icons"
+  mkdir -p "${pkgdir}/usr/share/backgrounds/xfce"
+  mkdir -p "${pkgdir}/usr/share/applications"
+  mkdir -p "${pkgdir}/usr/share/plank/themes"
+  mkdir -p "${pkgdir}/etc/skel/.lightpad"
+  mkdir -p "${pkgdir}/etc/xdg/xdg-unicorn/xfce4"
+  mkdir -p "${pkgdir}/usr/share/xsessions"
+  mkdir -p "${pkgdir}/usr/share/lightdm/lightdm.conf.d"
+  mkdir -p "${pkgdir}/usr/bin"
+  mkdir -p "${pkgdir}/usr/share/icons/hicolor/scalable/places"
+  mkdir -p "${pkgdir}/usr/share/themes"
+  mkdir -p "${pkgdir}/etc/X11/xorg.conf.d"
 }
 
 package() {
+  cd "${_archive}"
   # Install doc
-  sudo install -Dm644 "README.md" -t "${pkgdir}/usr/share/doc/${name}"
+  install -Dm644 "README.md" -t "${pkgdir}/usr/share/doc/${pkgname}"
   # Install
-  for i in xfce4 plank autostart cortile ulauncher; do
-    sudo cp -r "${i}" "${pkgdir}/etc/skel/.config"
+  for i in xfce4 plank autostart cortile ulauncher gtk-3.0 gtk-4.0; do
+    cp -r "${i}" "${pkgdir}/etc/skel/.config"
   done
-  sudo install -Dm755 "startunicorn" -t "${pkgdir}/usr/bin"
-  sudo install -Dm755 "unicorn-session" -t "${pkgdir}/usr/bin"
-  sudo install -Dm755 ".xinitrc" -t "${pkgdir}/etc/xdg/xdg-unicorn"
-  sudo install -Dm755 "xinitrc" -t "${pkgdir}/etc/xdg/xdg-unicorn"
-  sudo install -Dm755 ".bashrc" -t "${pkgdir}/etc/xdg/xdg-unicorn"
-  sudo cp -r failsafe/xfce4/* "${pkgdir}/etc/xdg/xdg-unicorn/xfce4"
-  sudo install -Dm644 "unicorn.desktop" -t "${pkgdir}/usr/share/xsessions"
-  sudo install -Dm644 "60-unicorn.conf" -t "${pkgdir}/usr/share/lightdm/lightdm.conf.d"
-  sudo cp -r rhino "${pkgdir}/usr/share/backgrounds/"
-  sudo cp -r rhinoplank "${pkgdir}/usr/share/plank/themes"
-  sudo cp docks.ini "${pkgdir}/etc/skel/.config"
-  sudo cp rhino/* "${pkgdir}/usr/share/backgrounds/xfce"
-  sudo cp icons/* "${pkgdir}/usr/share/icons"
-  sudo cp applications/* "${pkgdir}/usr/share/applications"
-  sudo cp lightpad/* "${pkgdir}/etc/skel/.lightpad"
-  sudo cp -r unicorn-dashboard "${pkgdir}/usr/share/themes"
-  sudo install -Dm644 "50-synaptics.conf" -t "${pkgdir}/etc/X11/xorg.conf.d"
-  sudo install -Dm644 "unicorn_badge-symbolic.svg" -t "${pkgdir}/usr/share/icons/hicolor/scalable/places"
-  sudo install -Dm644 "logo.png" -t "${pkgdir}/usr/share/icons"
-  sudo install -Dm644 "logo.svg" -t "${pkgdir}/usr/share/icons"
+  install -Dm755 "startunicorn" -t "${pkgdir}/usr/bin"
+  install -Dm755 "unicorn-session" -t "${pkgdir}/usr/bin"
+  install -Dm755 ".xinitrc" -t "${pkgdir}/etc/xdg/xdg-unicorn"
+  install -Dm755 "xinitrc" -t "${pkgdir}/etc/xdg/xdg-unicorn"
+  install -Dm755 ".bashrc" -t "${pkgdir}/etc/xdg/xdg-unicorn"
+  cp -r failsafe/xfce4/* "${pkgdir}/etc/xdg/xdg-unicorn/xfce4"
+  install -Dm644 "unicorn.desktop" -t "${pkgdir}/usr/share/xsessions"
+  install -Dm644 "60-unicorn.conf" -t "${pkgdir}/usr/share/lightdm/lightdm.conf.d"
+  cp -r rhino "${pkgdir}/usr/share/backgrounds/"
+  cp -r rhinoplank "${pkgdir}/usr/share/plank/themes"
+  cp docks.ini "${pkgdir}/etc/skel/.config"
+  cp rhino/* "${pkgdir}/usr/share/backgrounds/xfce"
+  cp icons/* "${pkgdir}/usr/share/icons"
+  cp applications/* "${pkgdir}/usr/share/applications"
+  cp lightpad/* "${pkgdir}/etc/skel/.lightpad"
+  cp -r unicorn-dashboard "${pkgdir}/usr/share/themes"
+  install -Dm644 "50-synaptics.conf" -t "${pkgdir}/etc/X11/xorg.conf.d"
+  install -Dm644 "unicorn_badge-symbolic.svg" -t "${pkgdir}/usr/share/icons/hicolor/scalable/places"
+  install -Dm644 "logo.png" -t "${pkgdir}/usr/share/icons"
+  install -Dm644 "logo.svg" -t "${pkgdir}/usr/share/icons"
 }
 
 post_install() {
   if ! [[ -d "${homedir}/.config" ]]; then
     mkdir -p "${homedir}/.config"
   fi
+  for i in gtk-3.0 gtk-4.0; do
+    if [[ -f "${homedir}/.config/${i}/gtk.css" && ! -f "${homedir}/.config/${i}/gtk.css-unicorn.bak" ]]; then
+      mv "${homedir}/.config/${i}/gtk.css" "${homedir}/.config/${i}/gtk.css-unicorn.bak"
+      cp -r "/etc/skel/.config/${i}" "${homedir}/.config"
+      sudo chown -cR "${PACSTALL_USER}" "${homedir}/.config/${i}"
+    fi
+  done
   for i in plank autostart cortile ulauncher; do
     cp -r "/etc/skel/.config/${i}" "${homedir}/.config"
     sudo chown -cR "${PACSTALL_USER}" "${homedir}/.config/${i}"
@@ -90,4 +96,19 @@ post_install() {
     echo "[keyfile]" | sudo tee -a /etc/NetworkManager/conf.d/10-globally-managed-devices.conf
     echo "unmanaged-devices=none" | sudo tee -a /etc/NetworkManager/conf.d/10-globally-managed-devices.conf
   fi
+  if [[ ! -d "/home/${PACSTALL_USER}/.config/gtk-3.0" ]]; then
+    mkdir -p "/home/${PACSTALL_USER}/.config/gtk-3.0"
+  fi
+  if [[ ! -f "/home/${PACSTALL_USER}/.config/gtk-3.0/gtk.css" ]] || ! grep -q 'vala-panel-appmenu-core' "/home/${PACSTALL_USER}/.config/gtk-3.0/gtk.css"; then
+    printf ".-vala-panel-appmenu-core > * {\n    min-width: 1430px;\n}\n" | tee -a "/home/${PACSTALL_USER}/.config/gtk-3.0/gtk.css" > /dev/null
+  fi
+  sudo chown -cR "${PACSTALL_USER}" "${homedir}/.config/gtk-3.0"
+  echo "============================================================================="
+  echo "Unicorn Desktop Post-Install Information"
+  echo ""
+  echo "If your GTK3 theme is still Yaru-purple-dark, please run the following to switch to our new theme:"
+  echo "gsettings set org.gnome.desktop.interface gtk-theme Adw-dark"
+  echo ""
+  echo "NOTE: You may need to run this after logging out and back in again."
+  echo "============================================================================="
 }

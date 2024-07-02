@@ -1,13 +1,14 @@
-name="yt-dlp"
-repology=("project: ${name}")
-pkgver="2023.12.30"
-url="https://github.com/yt-dlp/yt-dlp/releases/download/${pkgver}/yt-dlp"
+pkgname="yt-dlp"
+repology=("project: ${pkgname}")
+pkgver="2024.05.27"
+source=("https://github.com/yt-dlp/yt-dlp/releases/download/${pkgver}/yt-dlp")
 depends=("python3" "ffmpeg")
-breaks=("${name}-git" "${name}-bin" "${name}")
+breaks=("${pkgname}-git" "${pkgname}-bin" "${pkgname}")
 pkgdesc="A youtube-dl fork with additional features and fixes"
-hash="1965bf8dcf181a8e6adb99c0ec4cdaaae5e2d01ba1f5198f68535305d5ae94b2"
-maintainer="Oren Klopfer <oren@taumoda.com>"
+sha256sums=("b67769b0d68dbdc59a6d217713a37443b5a12c1d377c27c9946da8a537b995bb")
+maintainer=("Oren Klopfer <oren@taumoda.com>")
 
 package() {
-  sudo install -Dm755 "yt-dlp" -t "${pkgdir}/usr/bin"
+  cd "${_archive}"
+  install -Dm755 "yt-dlp" -t "${pkgdir}/usr/bin"
 }
